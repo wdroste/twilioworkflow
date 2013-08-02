@@ -1,0 +1,12 @@
+apply plugin:'war'
+apply plugin:'idea'
+apply plugin:'eclipse'
+
+//===========================================================================
+// Independent Gradle 
+//===========================================================================
+task wrapper(type: Wrapper) {
+    description = "Generates gradlew[.bat] scripts"
+    gradleVersion = '1.6'
+}
+
