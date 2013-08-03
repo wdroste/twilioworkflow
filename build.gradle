@@ -19,6 +19,11 @@ dependencies {
     compile 'javax.servlet:javax.servlet-api:3.0.1'
     compile 'org.python:jython-standalone:2.5.3'
     compile 'com.twilio.sdk:twilio-java-sdk:3.3.15'
+
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.easymock:easymock:3.2'
+    testCompile 'org.easymock:easymockclassextension:3.2'
+
 }
 
 //===========================================================================
