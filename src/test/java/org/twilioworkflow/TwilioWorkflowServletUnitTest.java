@@ -11,7 +11,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -71,6 +70,10 @@ public class TwilioWorkflowServletUnitTest {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         InputStream ins = TwilioWorkflowServletUnitTest.class.getResourceAsStream("/myworkflow.py");
+
+        EasyMock.expect(this.servletConfig.getInitParameter(EasyMock.eq("maxWorkflowScriptCacheSize"))).andReturn(null);
+        EasyMock.expect(this.servletConfig.getInitParameter(EasyMock.eq("maxWorkflowSessionIdleTimeInMinutes"))).andReturn(null);
+        EasyMock.expect(this.servletConfig.getInitParameter(EasyMock.eq("maxWorkflowSessionCache"))).andReturn(null);
 
         EasyMock.expect(this.httpServletRequest.getCookies()).andReturn(null);
         EasyMock.expect(this.httpServletRequest.getParameterMap()).andReturn(this.parameterMap);

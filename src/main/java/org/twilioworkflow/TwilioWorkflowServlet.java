@@ -2,6 +2,7 @@ package org.twilioworkflow;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
@@ -49,21 +50,28 @@ public class TwilioWorkflowServlet extends HttpServlet {
         Properties props = new Properties();
         PythonInterpreter.initialize(System.getProperties(), props, new String[]{""});
 
-        // TODO: Use servlet configuration
         this.workflowScriptCache = CacheBuilder
                 .newBuilder()
-                .maximumSize(100)
+                .maximumSize(getIntParameter(config, "maxWorkflowScriptCacheSize", 100))
                 .build();
 
-        // TODO: Use servlet configuration
+        int maxWorkflowSessionIdleTimeInMinutes = getIntParameter(config, "maxWorkflowSessionIdleTimeInMinutes", 10);
         this.workflowSessionCache = CacheBuilder
                 .newBuilder()
-                .maximumSize(10000)
-                .expireAfterWrite(1, TimeUnit.HOURS)
+                .maximumSize(getIntParameter(config, "maxWorkflowSessionCache", 1000))
+                .expireAfterWrite(maxWorkflowSessionIdleTimeInMinutes, TimeUnit.MINUTES)
                 .build();
 
         // build out the script compiler
         scriptEngineManager = new ScriptEngineManager();
+    }
+
+    static int getIntParameter(ServletConfig servletConfig, String parameterName, int defaultValue) {
+        String parameterValue = servletConfig.getInitParameter(parameterName);
+        if (Strings.isNullOrEmpty(parameterValue)) {
+            return defaultValue;
+        }
+        return Integer.parseInt(parameterValue);
     }
 
     /**
@@ -136,7 +144,8 @@ public class TwilioWorkflowServlet extends HttpServlet {
 
     String getWorkflowName(HttpServletRequest req) {
         String uri = req.getRequestURI();
-        return uri.substring(1);
+        int index = uri.lastIndexOf('/') + 1;
+        return uri.substring(index);
     }
 
     String getWorkflowSessionId(HttpServletRequest req) {
