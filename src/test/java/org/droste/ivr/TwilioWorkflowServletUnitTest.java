@@ -1,4 +1,8 @@
-package org.twilioworkflow;
+package org.droste.ivr;
+
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
 
 import com.google.common.collect.Maps;
 import org.easymock.EasyMock;
@@ -71,17 +75,17 @@ public class TwilioWorkflowServletUnitTest {
         PrintWriter printWriter = new PrintWriter(stringWriter);
         InputStream ins = TwilioWorkflowServletUnitTest.class.getResourceAsStream("/myworkflow.py");
 
-        EasyMock.expect(this.servletConfig.getInitParameter(EasyMock.eq("maxWorkflowScriptCacheSize"))).andReturn(null);
-        EasyMock.expect(this.servletConfig.getInitParameter(EasyMock.eq("maxWorkflowSessionIdleTimeInMinutes"))).andReturn(null);
-        EasyMock.expect(this.servletConfig.getInitParameter(EasyMock.eq("maxWorkflowSessionCache"))).andReturn(null);
+        expect(this.servletConfig.getInitParameter(eq("maxWorkflowScriptCacheSize"))).andReturn(null);
+        expect(this.servletConfig.getInitParameter(eq("maxWorkflowSessionIdleTimeInMinutes"))).andReturn(null);
+        expect(this.servletConfig.getInitParameter(eq("maxWorkflowSessionCache"))).andReturn(null);
 
-        EasyMock.expect(this.httpServletRequest.getCookies()).andReturn(null);
-        EasyMock.expect(this.httpServletRequest.getParameterMap()).andReturn(this.parameterMap);
-        EasyMock.expect(this.httpServletRequest.getRequestURI()).andReturn("/myworkflow");
-        EasyMock.expect(this.servletConfig.getServletContext()).andReturn(this.servletContext);
-        EasyMock.expect(this.servletContext.getResourceAsStream(EasyMock.eq("myworkflow.py"))).andReturn(ins);
-        this.httpServletResponse.addCookie(EasyMock.isA(Cookie.class));
-        EasyMock.expect(this.httpServletResponse.getWriter()).andReturn(printWriter);
+        expect(this.httpServletRequest.getCookies()).andReturn(null);
+        expect(this.httpServletRequest.getParameterMap()).andReturn(this.parameterMap);
+        expect(this.httpServletRequest.getRequestURI()).andReturn("/myworkflow");
+        expect(this.servletConfig.getServletContext()).andReturn(this.servletContext);
+        expect(this.servletContext.getResourceAsStream(eq("/WEB-INF/myworkflow.py"))).andReturn(ins);
+        this.httpServletResponse.addCookie(isA(Cookie.class));
+        expect(this.httpServletResponse.getWriter()).andReturn(printWriter);
 
         // execute a typical request
         this.control.replay();

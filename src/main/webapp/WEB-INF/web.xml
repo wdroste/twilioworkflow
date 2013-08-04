@@ -10,7 +10,7 @@
 
     <servlet>
         <servlet-name>TwilioWorkflowServlet</servlet-name>
-        <servlet-class>org.twilioworkflow.TwilioWorkflowServlet</servlet-class>
+        <servlet-class>org.droste.ivr.TwilioWorkflowServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

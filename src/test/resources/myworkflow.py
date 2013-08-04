@@ -1,5 +1,5 @@
 from com.twilio.sdk.verbs import TwiMLResponse
-from org.twilioworkflow import LastTwilioResponse
+from org.droste.ivr import LastTwilioResponse
 
 #
 # Simple test workflow

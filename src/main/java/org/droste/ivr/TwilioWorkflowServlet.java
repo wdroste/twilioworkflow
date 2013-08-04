@@ -1,4 +1,4 @@
-package org.twilioworkflow;
+package org.droste.ivr;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -37,7 +37,8 @@ import java.util.concurrent.TimeUnit;
  * This servlet is responsible for tracking Twilio sessions using Python generators for workflow execution.
  */
 public class TwilioWorkflowServlet extends HttpServlet {
-
+    private static final long serialVersionUID = 1L;
+    
     ScriptEngineManager scriptEngineManager;
     Cache<String, Invocable> workflowScriptCache;
     Cache<String, PyGenerator> workflowSessionCache;
@@ -131,7 +132,7 @@ public class TwilioWorkflowServlet extends HttpServlet {
         Closer closer = Closer.create();
         try {
             ServletContext ctx = getServletContext();
-            String scriptName = workflowName + ".py";
+            String scriptName = "/WEB-INF/" + workflowName + ".py";
             InputStream ins = ctx.getResourceAsStream(scriptName);
             Reader rdr = closer.register(new InputStreamReader(ins, "UTF-8"));
             return CharStreams.toString(rdr);
@@ -149,17 +150,16 @@ public class TwilioWorkflowServlet extends HttpServlet {
     }
 
     String getWorkflowSessionId(HttpServletRequest req) {
-        Cookie uuidCookie = null;
-        List<Cookie> cookies = getCookies(req);
-        if (!cookies.isEmpty()) {
-            uuidCookie = Iterables.find(cookies, new Predicate<Cookie>() {
+        try {
+            return Iterables.find(getCookies(req), new Predicate<Cookie>() {
                 @Override
                 public boolean apply(Cookie cookie) {
                     return "uuid".equals(cookie.getName());
                 }
-            });
+            }).getValue();
+        } catch (NoSuchElementException ex) {
+            return UUID.randomUUID().toString();
         }
-        return uuidCookie == null ? UUID.randomUUID().toString() : uuidCookie.getValue();
     }
 
     List<Cookie> getCookies(HttpServletRequest req) {
